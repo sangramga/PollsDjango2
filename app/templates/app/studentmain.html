@@ -1,0 +1,56 @@
+{% extends "app/layout.html" %}
+{% load poll_extras %}
+{% block content %}
+{% if user.is_active and user.is_staff %}
+<br>
+<br>
+  <div class="col-lg-9">
+    <table class="table table-striped table-hover table-bordered" style="margin-left: 115px">
+    <thead>
+      <tr><th>The Courses you are Teaching</th>
+      <th> Generate QR Code </th>
+      <th> View Attendence </th>
+      </tr>
+    </thead>
+    <tbody>  
+    {% for g in user_group %}
+      <tr>
+      <td>{{g.name}}</td>
+      <td><form method="POST" class="post-form" enctype = "multipart/form-data" >{% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-xs btn-primary" style="-border-radius:0">Generate</button>
+    </form></td>
+    <td><a href="/student/prof/{{g.id}}/">View</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+  </div>    
+  <div class="clearfix"></div>
+{% else %}
+<br></br>
+ <h2>Attendance Table</h2> 
+  <table class="table table-striped table-hover table-bordered">
+    <thead>
+      <tr>
+        <th>CourseId</th>
+        
+      {% for n in user_group%}
+          <td><a href="/student/get/{{n.id}}/">{{n.name}}</a></td>
+      {% endfor %}
+      </tr>
+      <tr> 
+      <th>Attendance(in %)</th>
+      {% for i in w%}
+          {% if i < 80 %}
+            <td style="color:red">{{i}}</td>
+          {% else %}
+            <td>{{i}}</td>
+          {% endif %}    
+      {% endfor %}
+        </tr>
+      
+    </thead>
+  </table>
+{% endif %}
+{% endblock %}
